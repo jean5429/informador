@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Painel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Biblioteca de Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fonte Inter (Moderna e Legível) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilo base para a fonte e o loader */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        
+        /* Estilo do Loader */
+        .loader {
+            border: 4px solid #374151; /* border-gray-700 */
+            border-top: 4px solid #3b82f6; /* border-blue-500 */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 3rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Melhorando o foco do contenteditable */
+        [contenteditable]:focus {
+            outline: 2px solid #3b82f6;
+            border-radius: 4px;
+            background-color: #374151;
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen w-full p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- CABEÇALHO: Saudação, Foco e Relógio -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <!-- Saudação e Foco do Dia -->
+            <div>
+                <h1 class="text-3xl font-bold" id="greeting"></h1>
+                <p class="text-lg text-gray-400">Seu foco para hoje é:</p>
+                <div id="focus-task" 
+                     contenteditable="true" 
+                     class="text-lg font-medium text-blue-300 p-1 -ml-1 transition-all"
+                     title="Clique para editar seu foco do dia">
+                    [Carregando...]
+                </div>
+            </div>
+            
+            <!-- Relógio e Data -->
+            <div class="text-left md:text-right">
+                <div id="clock" class="text-5xl font-bold text-blue-400">--:--</div>
+                <div id="date" class="text-xl text-gray-300">-- de ------ de ----</div>
+            </div>
+        </header>
+
+        <!-- CONTEÚDO PRINCIPAL: Grid de Cards -->
+        <!-- Ordem dos cards alterada (G1 movido para o final) -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Card: Clima (Americana/SP) -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between h-full md:col-span-1 lg:row-span-1">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold">Clima Atual</h2>
+                    <i data-lucide="map-pin" class="text-gray-400"></i>
+                </div>
+                <div id="weather-content" class="text-center flex-1 flex flex-col items-center justify-center">
+                    <!-- Conteúdo do Clima será injetado aqui -->
+                    <div class="loader"></div>
+                </div>
+                <div id="weather-location" class="text-center text-gray-400 text-lg mt-4">
+                    Americana, SP
+                </div>
+            </div>
+
+            <!-- Card: Notícias Serebii (ATUALIZADO de Pokebeach) -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <!-- Ícone e cor alterados -->
+                    <i data-lucide="sparkles" class="text-green-400 w-6 h-6"></i>
+                    <!-- Título alterado -->
+                    <h2 class="text-2xl font-semibold">Serebii News</h2>
+                </div>
+                <!-- Altura máxima reduzida para 250px -->
+                <!-- ID do feed alterado -->
+                <ul id="serebii-feed" class="space-y-3 overflow-y-auto" style="max-height: 250px;">
+                    <!-- Feed do Serebii será injetado aqui -->
+                    <div class="loader"></div>
+                </ul>
+            </div>
+
+            <!-- Card: Eventos Pokémon (NOVO) -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="calendar-clock" class="text-green-400 w-6 h-6"></i>
+                    <h2 class="text-2xl font-semibold">Eventos Pokémon</h2>
+                </div>
+                <div class="space-y-4">
+                    <!-- Scarlet/Violet -->
+                    <div>
+                        <h3 class="text-lg font-medium text-purple-300">Scarlet & Violet</h3>
+                        <!-- Informação estática como placeholder -->
+                        <p class="text-gray-200">Tera Raid: 'Mightiest' Feraligatr</p>
+                        <p class="text-sm text-gray-400">Tempo: Restam 1 dia e 8 horas.</p>
+                    </div>
+                    <!-- Legends ZA (ATUALIZADO) -->
+                    <div>
+                        <h3 class="text-lg font-medium text-blue-300">Legends Z-A</h3>
+                        <p class="text-gray-200">Ranked Battles Season 1</p>
+                        <p class="text-sm text-gray-400">Evento: Ganhe Greninjite (Outubro 2025)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card: Notícias G1 (MOVIDO PARA O FINAL) -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="https://s.glbimg.com/ss/Glb/g1/static/g1-logo-min.png" alt="Logo G1" class="h-6 bg-white rounded-full p-1">
+                    <h2 class="text-2xl font-semibold">Últimas do G1</h2>
+                </div>
+                <!-- Altura máxima reduzida para 250px -->
+                <ul id="g1-feed" class="space-y-3 overflow-y-auto" style="max-height: 250px;">
+                    <!-- Feed do G1 será injetado aqui -->
+                    <div class="loader"></div>
+                </ul>
+            </div>
+
+        </main>
+
+        <footer class="text-center text-gray-600 text-sm mt-10">
+            Painel desenvolvido pela Gemini.
+        </footer>
+    </div>
+
+    <!-- CÓDIGO SCRIPT COMPLETO E CORRIGIDO -->
+    <script>
+        // --- CONSTANTES E URLs ---
+        // Usamos um proxy RSS-para-JSON (rss2json) para evitar problemas de CORS
+        const G1_RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/rss/g1/";
+        // URL ATUALIZADA para Serebii.net
+        const SEREBII_RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://www.serebii.net/news.xml";
+        const WEATHER_URL = "https://wttr.in/Americana?format=j1"; // API de clima simples
+        const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 Minutos
+
+        // --- ELEMENTOS DO DOM ---
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        const greetingEl = document.getElementById('greeting');
+        const focusTaskEl = document.getElementById('focus-task');
+        const weatherContentEl = document.getElementById('weather-content');
+        const weatherLocationEl = document.getElementById('weather-location');
+        const g1FeedEl = document.getElementById('g1-feed');
+        // Variável ATUALIZADA
+        const serebiiFeedEl = document.getElementById('serebii-feed');
+
+        // --- FUNÇÕES DE ATUALIZAÇÃO ---
+
+        /**
+         * Atualiza o relógio e a data a cada segundo.
+         */
+        function updateClockAndDate() {
+            const now = new Date();
+            
+            // Relógio (HH:MM)
+            const timeOptions = { hour: '2-digit', minute: '2-digit' };
+            clockEl.textContent = now.toLocaleTimeString('pt-BR', timeOptions);
+            
+            // Data (ex: sexta-feira, 24 de outubro)
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+            let dateString = now.toLocaleDateString('pt-BR', dateOptions);
+            dateEl.textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+        }
+
+        /**
+         * Define a saudação (Bom dia, Boa tarde, Boa noite)
+         */
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) {
+                greetingEl.textContent = "Bom dia!";
+            } else if (hour < 18) {
+                greetingEl.textContent = "Boa tarde!";
+            } else {
+                greetingEl.textContent = "Boa noite!";
+            }
+        }
+        
+        /**
+         * Carrega e salva a tarefa de foco do localStorage
+         */
+        function setupFocusTask() {
+            const savedFocus = localStorage.getItem('dailyFocusTask');
+            focusTaskEl.textContent = savedFocus || '[Clique para definir seu foco]';
+            
+            // Salva ao perder o foco (blur)
+            focusTaskEl.addEventListener('blur', () => {
+                localStorage.setItem('dailyFocusTask', focusTaskEl.textContent.trim());
+            });
+            
+            // Impede nova linha ao pressionar Enter
+            focusTaskEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    focusTaskEl.blur();
+                }
+            });
+        }
+
+        /**
+         * Mapeia a descrição do tempo para um ícone Lucide
+         */
+        function getWeatherIcon(description) {
+            const desc = description.toLowerCase();
+            if (desc.includes('sunny') || desc.includes('clear')) return 'sun';
+            if (desc.includes('partly cloudy')) return 'cloud-sun';
+            if (desc.includes('cloudy') || desc.includes('overcast')) return 'cloud';
+            if (desc.includes('rain') || desc.includes('shower')) return 'cloud-rain';
+            if (desc.includes('thunder')) return 'cloud-lightning';
+            if (desc.includes('snow')) return 'cloud-snow';
+            if (desc.includes('fog') || desc.includes('mist')) return 'cloud-fog';
+            return 'sun'; // Padrão
+        }
+
+        /**
+         * Busca e exibe o clima de Americana/SP
+         */
+        async function fetchWeather() {
+            try {
+                const response = await fetch(WEATHER_URL);
+                if (!response.ok) throw new Error('Erro na rede ao buscar clima');
+                
+                const data = await response.json();
+                const current = data.current_condition[0];
+                const weatherDesc = current.weatherDesc[0].value;
+                const iconName = getWeatherIcon(weatherDesc);
+
+                weatherContentEl.innerHTML = `
+                    <div id="weather-icon" class="mb-2">
+                        <i data-lucide="${iconName}" class="w-24 h-24 text-blue-400"></i>
+                    </div>
+                    <div classs="text-7xl font-bold">${current.temp_C}°C</div>
+                    <div class="text-2xl text-gray-300">${weatherDesc}</div>
+                `;
+                weatherLocationEl.textContent = `${data.nearest_area[0].areaName[0].value}, ${data.nearest_area[0].region[0].value}`;
+                
+                // Recria o ícone do clima
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error("Erro ao buscar clima:", error);
+                weatherContentEl.innerHTML = '<p class="text-red-400">Não foi possível carregar o clima.</p>';
+            }
+        }
+
+        /**
+         * Busca notícias de um feed RSS e as exibe em um container
+         * @param {string} url - A URL da API rss2json
+         * @param {HTMLElement} container - O elemento <ul> onde o feed será inserido
+         * @param {number} limit - O número de notícias a exibir
+         */
+        async function fetchNews(url, container, limit) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Erro na rede ao buscar notícias');
+
+                const data = await response.json();
+                if (data.status !== 'ok') throw new Error('Erro na API RSS');
+
+                const items = data.items.slice(0, limit);
+                
+                // Limpa o loader
+                container.innerHTML = '';
+                
+                // Adiciona os itens da lista
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "border-b border-gray-700 pb-2 last:border-b-0";
+                    li.innerHTML = `
+                        <a href="${item.link}" target="_blank" rel="noopener noreferrer" 
+                           class="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+                            ${item.title}
+                        </a>
+                    `;
+                    container.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error(`Erro ao buscar notícias de ${url}:`, error);
+                container.innerHTML = '<li class="text-red-400">Não foi possível carregar as notícias.</li>';
+            }
+        }
+        
+        /**
+         * Função principal para buscar todos os dados
+         */
+        function fetchAllData() {
+            fetchWeather();
+            fetchNews(G1_RSS_URL, g1FeedEl, 5);
+            // Chamada ATUALIZADA
+            fetchNews(SEREBII_RSS_URL, serebiiFeedEl, 5);
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Atualiza relógio e saudação imediatamente
+            updateClockAndDate();
+            updateGreeting();
+            setupFocusTask();
+            
+            // Busca todos os dados da API
+            fetchAllData();
+
+            // Cria os ícones estáticos (map-pin, sparkles, calendar-clock)
+            lucide.createIcons();
+            
+            // Define os intervalos de atualização
+            setInterval(updateClockAndDate, 1000); // Relógio a cada segundo
+            setInterval(fetchAllData, REFRESH_INTERVAL); // Dados a cada 5 minutos
+        });
+
+    </script>
+</body>
+</html>
+
