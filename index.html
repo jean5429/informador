@@ -44,9 +44,11 @@
         }
     </style>
 </head>
-<body class="text-gray-100 min-h-screen w-full p-6 md:p-10">
+<!-- ATUALIZADO: Layout de tela cheia (h-screen, flex-col, overflow-hidden) e padding global -->
+<body class="text-gray-100 h-screen w-full p-6 md:p-10 flex flex-col overflow-hidden">
 
-    <div class="max-w-7xl mx-auto">
+    <!-- ATUALIZADO: Container principal que preenche a tela (removido max-w-7xl) -->
+    <div class="flex-1 flex flex-col min-h-0 w-full">
         <!-- CABEÇALHO: Saudação, Foco e Relógio -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <!-- Saudação e Foco do Dia -->
@@ -69,10 +71,11 @@
         </header>
 
         <!-- CONTEÚDO PRINCIPAL: Grid de Cards -->
-        <!-- Ordem dos cards alterada (G1 movido para o final) -->
-        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- ATUALIZADO: 'flex-1' faz o grid preencher o espaço vertical -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-1">
 
             <!-- Card: Clima (Americana/SP) -->
+            <!-- ATUALIZADO: h-full faz este card esticar verticalmente -->
             <div class="bg-gray-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between h-full md:col-span-1 lg:row-span-1">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-semibold">Clima Atual</h2>
@@ -87,23 +90,22 @@
                 </div>
             </div>
 
-            <!-- Card: Notícias Serebii (ATUALIZADO de Pokebeach) -->
-            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1">
+            <!-- Card: Notícias Pokémon.com (ATUALIZADO) -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1 flex flex-col">
                 <div class="flex items-center gap-3 mb-4">
-                    <!-- Ícone e cor alterados -->
-                    <i data-lucide="sparkles" class="text-green-400 w-6 h-6"></i>
-                    <!-- Título alterado -->
-                    <h2 class="text-2xl font-semibold">Serebii News</h2>
+                    <!-- Ícone e cor ATUALIZADOS -->
+                    <i data-lucide="newspaper" class="text-yellow-400 w-6 h-6"></i>
+                    <!-- Título ATUALIZADO -->
+                    <h2 class="text-2xl font-semibold">Pokémon.com News</h2>
                 </div>
-                <!-- Altura máxima reduzida para 250px -->
-                <!-- ID do feed alterado -->
-                <ul id="serebii-feed" class="space-y-3 overflow-y-auto" style="max-height: 250px;">
-                    <!-- Feed do Serebii será injetado aqui -->
+                <!-- ID do feed ATUALIZADO -->
+                <ul id="pokemon-feed" class="space-y-3 overflow-y-auto" style="max-height: 250px;">
+                    <!-- Feed será injetado aqui -->
                     <div class="loader"></div>
                 </ul>
             </div>
 
-            <!-- Card: Eventos Pokémon (NOVO) -->
+            <!-- Card: Eventos Pokémon -->
             <div class="bg-gray-800 rounded-2xl p-6 shadow-lg">
                 <div class="flex items-center gap-3 mb-4">
                     <i data-lucide="calendar-clock" class="text-green-400 w-6 h-6"></i>
@@ -121,13 +123,14 @@
                     <div>
                         <h3 class="text-lg font-medium text-blue-300">Legends Z-A</h3>
                         <p class="text-gray-200">Ranked Battles Season 1</p>
-                        <p class="text-sm text-gray-400">Evento: Ganhe Greninjite (Outubro 2025)</p>
+                        <!-- Texto do evento ATUALIZADO -->
+                        <p class="text-sm text-gray-400">Termina: 04/Nov/2025, 9:59 p.m. PST</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Card: Notícias G1 (MOVIDO PARA O FINAL) -->
-            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1">
+            <!-- Card: Notícias G1 -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg md:col-span-1 lg:col-span-1 flex flex-col">
                 <div class="flex items-center gap-3 mb-4">
                     <img src="https://s.glbimg.com/ss/Glb/g1/static/g1-logo-min.png" alt="Logo G1" class="h-6 bg-white rounded-full p-1">
                     <h2 class="text-2xl font-semibold">Últimas do G1</h2>
@@ -141,20 +144,21 @@
 
         </main>
 
-        <footer class="text-center text-gray-600 text-sm mt-10">
-            Painel desenvolvido pela Gemini.
+        <!-- ATUALIZADO: Rodapé limpo -->
+        <footer class="text-center text-gray-600 text-sm mt-10 h-6">
         </footer>
     </div>
 
     <!-- CÓDIGO SCRIPT COMPLETO E CORRIGIDO -->
     <script>
         // --- CONSTANTES E URLs ---
-        // Usamos um proxy RSS-para-JSON (rss2json) para evitar problemas de CORS
         const G1_RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/rss/g1/";
-        // URL ATUALIZADA para Serebii.net
-        const SEREBII_RSS_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://www.serebii.net/news.xml";
+        // ATUALIZADO: Proxy para o feed RSS oficial do Pokémon.com
+        const POKEMON_COM_PROXY_URL = "https://api.allorigins.win/get?url=https%3A%2F%2Fwww.pokemon.com%2Fus%2Fpokemon-news%2Frss";
         const WEATHER_URL = "https://wttr.in/Americana?format=j1"; // API de clima simples
         const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 Minutos
+        // ATUALIZADO: Intervalo do relógio para 1 minuto
+        const CLOCK_INTERVAL = 60 * 1000; // 1 Minuto
 
         // --- ELEMENTOS DO DOM ---
         const clockEl = document.getElementById('clock');
@@ -164,13 +168,13 @@
         const weatherContentEl = document.getElementById('weather-content');
         const weatherLocationEl = document.getElementById('weather-location');
         const g1FeedEl = document.getElementById('g1-feed');
-        // Variável ATUALIZADA
-        const serebiiFeedEl = document.getElementById('serebii-feed');
+        // ATUALIZADO: Variável do DOM
+        const pokemonFeedEl = document.getElementById('pokemon-feed');
 
         // --- FUNÇÕES DE ATUALIZAÇÃO ---
 
         /**
-         * Atualiza o relógio e a data a cada segundo.
+         * Atualiza o relógio e a data.
          */
         function updateClockAndDate() {
             const now = new Date();
@@ -267,10 +271,7 @@
         }
 
         /**
-         * Busca notícias de um feed RSS e as exibe em um container
-         * @param {string} url - A URL da API rss2json
-         * @param {HTMLElement} container - O elemento <ul> onde o feed será inserido
-         * @param {number} limit - O número de notícias a exibir
+         * Busca notícias (formato rss2json) e as exibe (usado para G1)
          */
         async function fetchNews(url, container, limit) {
             try {
@@ -303,6 +304,55 @@
                 container.innerHTML = '<li class="text-red-400">Não foi possível carregar as notícias.</li>';
             }
         }
+
+        /**
+         * ATUALIZADO: Busca notícias do Pokémon.com usando proxy (allorigins) e DOMParser
+         */
+        async function fetchPokemonNews(url, container, limit) {
+            try {
+                const response = await fetch(url); // Este é o proxy allorigins
+                if (!response.ok) throw new Error('Erro na rede (proxy)');
+                
+                const data = await response.json(); // allorigins retorna JSON
+                const xmlString = data.contents;
+                
+                // Parseia a string XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+                
+                // Checa por erros de parsing
+                const parserError = xmlDoc.querySelector("parsererror");
+                if (parserError) {
+                    console.error("Erro ao parsear XML:", parserError);
+                    throw new Error('Erro ao ler o feed XML');
+                }
+
+                // Pega os itens do feed (padrão RSS)
+                const items = Array.from(xmlDoc.querySelectorAll("item")).slice(0, limit);
+                
+                container.innerHTML = ''; // Limpa o loader
+                
+                items.forEach(item => {
+                    const title = item.querySelector("title")?.textContent || 'Sem Título';
+                    const link = item.querySelector("link")?.textContent || '#';
+                    
+                    const li = document.createElement('li');
+                    li.className = "border-b border-gray-700 pb-2 last:border-b-0";
+                    li.innerHTML = `
+                        <a href="${link}" target="_blank" rel="noopener noreferrer" 
+                           class="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+                            ${title}
+                        </a>
+                    `;
+                    container.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error(`Erro ao buscar notícias de ${url}:`, error);
+                // Mensagem de erro ATUALIZADA
+                container.innerHTML = '<li class="text-red-400">Não foi possível carregar as notícias. (Pokémon.com)</li>';
+            }
+        }
         
         /**
          * Função principal para buscar todos os dados
@@ -310,8 +360,8 @@
         function fetchAllData() {
             fetchWeather();
             fetchNews(G1_RSS_URL, g1FeedEl, 5);
-            // Chamada ATUALIZADA
-            fetchNews(SEREBII_RSS_URL, serebiiFeedEl, 5);
+            // ATUALIZADO: Chama a nova função específica do Pokémon.com
+            fetchPokemonNews(POKEMON_COM_PROXY_URL, pokemonFeedEl, 5);
         }
 
         // --- INICIALIZAÇÃO ---
@@ -324,11 +374,12 @@
             // Busca todos os dados da API
             fetchAllData();
 
-            // Cria os ícones estáticos (map-pin, sparkles, calendar-clock)
+            // Cria os ícones estáticos (map-pin, newspaper, calendar-clock)
             lucide.createIcons();
             
             // Define os intervalos de atualização
-            setInterval(updateClockAndDate, 1000); // Relógio a cada segundo
+            // ATUALIZADO: Relógio a cada 1 minuto
+            setInterval(updateClockAndDate, CLOCK_INTERVAL); 
             setInterval(fetchAllData, REFRESH_INTERVAL); // Dados a cada 5 minutos
         });
 
