@@ -187,32 +187,6 @@
                     <div class="loader"></div>
                 </ul>
             </section>
-
-            <!-- Seção: Pokémon Database (Prioridade #3) -->
-            <section>
-                <div class="flex items-center gap-4 mb-3"> <!-- ATUALIZADO: mb-4 para mb-3 -->
-                    <i data-lucide="database" class="text-blue-400 w-7 h-7 flex-shrink-0"></i> <!-- ATUALIZADO: w/h 8 para 7 -->
-                    <!-- ATUALIZADO: de 3xl para 2xl -->
-                    <h2 class="text-2xl font-bold">PokéDB</h2>
-                </div>
-                <ul id="pokemondb-feed" class="space-y-3 feed-container"> <!-- ATUALIZADO: space-y-4 para 3 -->
-                    <!-- Feed será injetado aqui -->
-                    <div class="loader"></div>
-                </ul>
-            </section>
-
-            <!-- Seção: Pokemaniacal (Prioridade #3) -->
-            <section>
-                <div class="flex items-center gap-4 mb-3"> <!-- ATUALIZADO: mb-4 para mb-3 -->
-                    <i data-lucide="zap" class="text-purple-400 w-7 h-7 flex-shrink-0"></i> <!-- ATUALIZADO: w/h 8 para 7 -->
-                    <!-- ATUALIZADO: de 3xl para 2xl -->
-                    <h2 class="text-2xl font-bold">Pokemaniacal</h2>
-                </div>
-                <ul id="pokemaniacal-feed" class="space-y-3 feed-container"> <!-- ATUALIZADO: space-y-4 para 3 -->
-                    <!-- Feed será injetado aqui -->
-                    <div class="loader"></div>
-                </ul>
-            </section>
             
         </div>
     </aside>
@@ -498,9 +472,9 @@
             fetchWeather();
             
             // ATUALIZADO: Busca os feeds com limite de 3
-            fetchRssFeed(POKEMONBLOG_URL, pokemonBlogFeedEl, 3, "PokemonBlog", "orange");
-            fetchRssFeed(POKEMONDB_URL, pokemonDbFeedEl, 3, "PokemonDB", "blue");
-            fetchRssFeed(POKEMANIACAL_URL, pokeManiacalFeedEl, 3, "Pokemaniacal", "purple");
+            fetchRssFeed(POKEMONBLOG_URL, pokemonBlogFeedEl, 8, "PokemonBlog", "orange");
+            //fetchRssFeed(POKEMONDB_URL, pokemonDbFeedEl, 3, "PokemonDB", "blue");
+            //fetchRssFeed(POKEMANIACAL_URL, pokeManiacalFeedEl, 3, "Pokemaniacal", "purple");
 
             // NOVO: Busca o Pokémon aleatório
             fetchRandomPokemon();
@@ -532,6 +506,3 @@
     </script>
 </body>
 </html>
-
-
-
