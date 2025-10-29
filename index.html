@@ -38,7 +38,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* NOVO: Animação da Greatball */
+        /* Animação da Greatball */
         .greatball-spin {
             animation: spin 1s linear infinite;
         }
@@ -64,18 +64,12 @@
         }
     </style>
 </head>
-<!-- 
-  NOVA ESTRUTURA DE LAYOUT (Prioridade Ajustada):
-  - Coluna Esquerda (Principal): Eventos (Topo), Pokémon Aleatório (Centro) e Clima (Base).
-  - Coluna Direita (Barra Lateral): Relógio, Foco e Feeds (Rolável).
--->
 <body class="h-screen w-full flex flex-col lg:flex-row">
 
-    <!-- Coluna Principal (Conteúdo) - AGORA COM EVENTOS E CLIMA -->
+    <!-- Coluna Principal (Conteúdo) -->
     <div class="flex-1 flex flex-col p-8 md:p-12 lg:w-2/3 h-full">
 
-        <!-- PEÇA PRINCIPAL: Eventos (Prioridade #1) -->
-        <!-- ATUALIZADO: main agora é flex-col para abrigar o Pokémon -->
+        <!-- PEÇA PRINCIPAL: Eventos -->
         <main class="flex-1 flex flex-col min-h-0">
             <!-- Eventos (não crescem) -->
             <section class="flex-shrink-0">
@@ -100,10 +94,9 @@
                 </div>
             </section>
 
-            <!-- NOVO: Container do Pokémon (cresce para preencher o espaço) -->
+            <!-- Container do Pokémon (cresce para preencher o espaço) -->
             <section id="pokemon-container" class="flex-1 flex flex-col justify-center items-center p-4 min-h-0">
                 <!-- Loader Específico do Pokémon (Greatball) -->
-                <!-- ATUALIZADO: Loader padrão substituído por SVG -->
                 <div id="pokemon-loader">
                     <svg class="greatball-spin" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
                         <path stroke="#f87171" fill="#f87171" d="M12 2a10 10 0 0 0-9.9 9h19.8A10 10 0 0 0 12 2Z"></path>
@@ -117,7 +110,7 @@
             </section>
         </main>
 
-        <!-- RODAPÉ: Widget de Clima (Prioridade #2) -->
+        <!-- RODAPÉ: Widget de Clima -->
         <footer class="flex-shrink-0 mt-8">
             <!-- Widget de Clima Redesenhado -->
             <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-lg">
@@ -141,33 +134,26 @@
     </div>
 
     <!-- Coluna da Barra Lateral (Feeds e Relógio) -->
-    <!-- ATUALIZADO: Removido overflow-y-auto e sidebar-scroll, pois o conteúdo deve caber -->
     <aside class="lg:w-1/3 lg:h-full bg-slate-800/50 backdrop-blur-md border-l border-slate-700/50">
-        <!-- ATUALIZADO: Ajustado padding e espaçamento para caber -->
         <div class="p-8 md:p-10 space-y-8">
             
-            <!-- Seção: Relógio, Data e Foco (Prioridade #4) -->
+            <!-- Seção: Relógio, Data e Foco -->
             <section>
-                <!-- Relógio (Tamanho reduzido) -->
-                <!-- ATUALIZADO: de 7xl para 6xl -->
+                <!-- Relógio -->
                 <div id="clock" class="text-6xl font-bold text-indigo-400">
                     --:--
                 </div>
-                <!-- Data (Tamanho reduzido) -->
-                <!-- ATUALIZADO: de 2xl para xl -->
+                <!-- Data -->
                 <div id="date" class="text-xl text-gray-300 font-light">
                     -- de ------ de ----
                 </div>
 
-                <!-- Saudação e Foco (Movido para cá) -->
-                <div class="mt-4"> <!-- ATUALIZADO: margem de 6 para 4 -->
-                    <!-- ATUALIZADO: de 3xl para 2xl -->
+                <!-- Saudação e Foco -->
+                <div class="mt-4">
                     <h1 class="text-2xl font-bold" id="greeting"></h1>
-                    <!-- ATUALIZADO: de lg para base -->
                     <p class="text-base text-gray-400 mt-1">Seu foco para hoje é:</p>
                     <div id="focus-task" 
                          contenteditable="true" 
-                         <!-- ATUALIZADO: de lg para base -->
                          class="text-base font-medium text-indigo-300 p-2 -ml-2 transition-all rounded-lg"
                          title="Clique para editar seu foco do dia">
                         [Carregando...]
@@ -175,14 +161,13 @@
                 </div>
             </section>
 
-            <!-- Seção: PokemonBlog.com (Prioridade #3) -->
+            <!-- Seção: PokemonBlog.com -->
             <section>
-                <div class="flex items-center gap-4 mb-3"> <!-- ATUALIZADO: mb-4 para mb-3 -->
-                    <i data-lucide="rss" class="text-orange-400 w-7 h-7 flex-shrink-0"></i> <!-- ATUALIZADO: w/h 8 para 7 -->
-                    <!-- ATUALIZADO: de 3xl para 2xl -->
+                <div class="flex items-center gap-4 mb-3">
+                    <i data-lucide="rss" class="text-orange-400 w-7 h-7 flex-shrink-0"></i>
                     <h2 class="text-2xl font-bold">PokemonBlog</h2>
                 </div>
-                <ul id="pokemonblog-feed" class="space-y-3 feed-container"> <!-- ATUALIZADO: space-y-4 para 3 -->
+                <ul id="pokemonblog-feed" class="space-y-3 feed-container">
                     <!-- Feed será injetado aqui -->
                     <div class="loader"></div>
                 </ul>
@@ -191,17 +176,64 @@
         </div>
     </aside>
 
-    <!-- CÓDIGO SCRIPT (Lógica JS permanece a mesma, apenas o HTML do Clima mudou) -->
+    <!-- NOVO: Barra de Progresso de Atualização -->
+    <div id="refresh-progress-bar-container" class="fixed bottom-0 left-0 w-full h-1 bg-slate-700 z-50 overflow-hidden">
+        <!-- A animação desta barra será controlada via JS -->
+        <div id="refresh-progress-bar" class="h-1 bg-indigo-400" style="width: 100%; transform: scaleX(0); transform-origin: left;"></div>
+    </div>
+
+
+    <!-- CÓDIGO SCRIPT -->
     <script>
+        // --- NOVO: EMOJI E MAPA DE PALAVRAS-CHAVE ---
+        // Este objeto mapeia palavras-chave (em minúsculas) para emojis
+        const emojiMap = {
+            'v-max': '⚡️',
+            'gigantamax': '💥',
+            'scarlet': '💜',
+            'violet': '🧡',
+            'dlc': '💿',
+            'update': '⬆️',
+            'event': '🎉',
+            'battle': '⚔️',
+            'contest': '🏆',
+            'new': '✨',
+            'tcg': '🃏',
+            'anime': '📺',
+            'unite': '🤝',
+            'go': '📱',
+            'legends': '📖',
+            'sleep': '😴',
+            'mystery gift': '🎁',
+            'z-a': '💠',
+            'review': '🤔',
+            'guide': '🗺️'
+        };
+
+        /**
+         * NOVO: Retorna um emoji baseado no título da notícia.
+         */
+        function getEmojiForTitle(title) {
+            // Itera pelas chaves do nosso mapa
+            for (const keyword in emojiMap) {
+                if (title.includes(keyword)) {
+                    return emojiMap[keyword]; // Retorna o emoji correspondente
+                }
+            }
+            return '📰'; // Emoji padrão se nenhuma palavra-chave for encontrada
+        }
+
+
         // --- CONSTANTES E URLs ---
         const POKEMONBLOG_URL = "https://corsproxy.io/?https%3A%2F%2Fpokemonblog.com%2Ffeed%2F";
         const POKEMONDB_URL = "https://corsproxy.io/?https%3A%2F%2Fpokemondb.net%2Fnews%2Ffeed%2F";
         const POKEMANIACAL_URL = "https://corsproxy.io/?https%3A%2F%2Fpokemaniacal.com%2Ffeed%2F";
         
-        // ATUALIZADO: Trocando para um provedor de clima diferente (GoWeather) via proxy, pois o wttr.in falhou.
         const WEATHER_URL = "https://corsproxy.io/?https%3A%2F%2Fgoweather.herokuapp.com%2Fweather%2FAmericana";
         const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 Minutos
-        const CLOCK_INTERVAL = 1000; // ATUALIZADO para 1 segundo para um relógio mais fluido
+        const CLOCK_INTERVAL = 1000; // 1 segundo
+        const PROGRESS_BAR_UPDATE_INTERVAL = 1000; // 1 segundo (para a barra de progresso)
+
 
         // --- ELEMENTOS DO DOM ---
         const clockEl = document.getElementById('clock');
@@ -215,12 +247,33 @@
         const pokemonDbFeedEl = document.getElementById('pokemondb-feed');
         const pokeManiacalFeedEl = document.getElementById('pokemaniacal-feed');
 
-        // NOVO: Elementos do Pokémon
         const pokemonLoaderEl = document.getElementById('pokemon-loader');
         const pokemonImageEl = document.getElementById('pokemon-image');
 
+        // NOVO: Elemento da barra de progresso
+        const progressBarEl = document.getElementById('refresh-progress-bar');
+
+        // --- VARIÁVEIS DE ESTADO ---
+        let lastRefreshTime = 0; // NOVO: Rastreia o tempo da última atualização
+
 
         // --- FUNÇÕES DE ATUALIZAÇÃO ---
+
+        /**
+         * NOVO: Atualiza a barra de progresso de 5 minutos.
+         */
+        function updateProgressBar() {
+            const now = Date.now();
+            const elapsed = now - lastRefreshTime;
+            let progress = (elapsed / REFRESH_INTERVAL);
+            
+            if (progress >= 1) {
+                progress = 1; // Garante que não passe de 100%
+            }
+            
+            progressBarEl.style.transform = `scaleX(${progress})`;
+        }
+
 
         /**
          * Atualiza o relógio e a data.
@@ -299,9 +352,7 @@
                 
                 const data = await response.json();
 
-                // --- ATUALIZADO PARA O FORMATO GoWeather ---
                 if (!data.temperature || !data.description) {
-                    // Se o proxy falhar, ele pode retornar o HTML da página do proxy
                     if (response.headers.get("content-type")?.includes("text/html")) {
                         throw new Error('Proxy (corsproxy.io) falhou ao buscar o clima.');
                     }
@@ -309,11 +360,9 @@
                 }
 
                 const weatherDesc = data.description;
-                // Limpa a string de temperatura (ex: "+25 °C" -> "25 °C")
                 const tempC = data.temperature.replace('+', '').trim(); 
                 const iconName = getWeatherIcon(weatherDesc);
 
-                // Novo HTML para o widget de clima
                 weatherContentEl.innerHTML = `
                     <div id="weather-icon">
                         <i data-lucide="${iconName}" class="w-20 h-20 text-indigo-400"></i>
@@ -323,7 +372,6 @@
                         <div class="text-xl text-gray-300">${weatherDesc}</div>
                     </div>
                 `;
-                // GoWeather não retorna o local, então mantemos o que já estava
                 weatherLocationEl.textContent = `Americana, SP`;
                 lucide.createIcons();
 
@@ -338,10 +386,10 @@
          */
         async function fetchRssFeed(url, container, limit, feedName, hoverColor) {
             try {
-                const response = await fetch(url); // Este é o proxy corsproxy.io
+                const response = await fetch(url); 
                 
-                if (response.status === 429) { // HTTP 429: Too Many Requests
-                     throw new Error(`Proxy (corsproxy.io) está com limite de requisições. Tente mais tarde. (Feed: ${feedName})`);
+                if (response.status === 429) { 
+                       throw new Error(`Proxy (corsproxy.io) está com limite de requisições. Tente mais tarde. (Feed: ${feedName})`);
                 }
                 if (!response.ok) throw new Error(`Erro na rede (proxy ${feedName}) - Status: ${response.status}`);
                 
@@ -360,7 +408,6 @@
                     throw new Error(`Erro ao ler o feed XML (${feedName})`);
                 }
 
-                // Tenta 'item' (padrão RSS) e 'entry' (padrão Atom)
                 const items = Array.from(xmlDoc.querySelectorAll("item, entry")).slice(0, limit);
                 
                 if (items.length === 0 && !parserError) {
@@ -375,13 +422,22 @@
                     
                     if (link.includes('#comments')) return; 
 
+                    // --- NOVO: Pega o emoji para o título ---
+                    const emoji = getEmojiForTitle(title.toLowerCase());
+
                     const li = document.createElement('li');
                     li.className = "border-b border-slate-700/50 pb-3 last:border-b-0";
+                    
+                    // --- ATUALIZADO: HTML para incluir o emoji e flex layout ---
                     li.innerHTML = `
-                        <!-- ATUALIZADO: de text-base (padrão) para text-sm -->
                         <a href="${link}" target="_blank" rel="noopener noreferrer" 
-                           class="text-sm text-gray-200 font-medium hover:text-${hoverColor}-400 transition-colors duration-200">
-                            ${title}
+                           class="text-sm text-gray-200 font-medium hover:text-${hoverColor}-400 transition-colors duration-200 flex items-center gap-2.5">
+                            
+                            <!-- Span para o emoji -->
+                            <span class="text-lg" title="${emoji}">${emoji}</span> 
+                            
+                            <!-- Span para o título (flex-1 faz ele ocupar o espaço restante) -->
+                            <span class="flex-1">${title}</span>
                         </a>
                     `;
                     container.appendChild(li);
@@ -394,14 +450,14 @@
         }
 
         /**
-         * NOVO: Busca um Pokémon aleatório (com 1% de chance shiny) da PokeAPI
+         * ATUALIZADO: Busca um Pokémon aleatório, garantindo alta resolução.
          */
         async function fetchRandomPokemon() {
             try {
                 // Mostrar loader e esconder imagem antiga
                 pokemonLoaderEl.classList.remove('hidden');
                 pokemonImageEl.classList.add('hidden');
-                pokemonImageEl.classList.remove('opacity-100'); // para transição
+                pokemonImageEl.classList.remove('opacity-100'); 
 
                 // ID Aleatório (Gen 1-9, ID 1 a 1025)
                 const randomId = Math.floor(Math.random() * 1025) + 1;
@@ -414,54 +470,58 @@
                 // Lógica do Shiny (1% de chance)
                 const isShiny = Math.random() < 0.01;
                 
-                // ATUALIZADO: Lógica de fallback robusta para a imagem (priorizando official-artwork)
                 const sprites = data.sprites.other;
                 let imageUrl = null;
                 
+                // 1. Tenta pegar a imagem Shiny de ALTA RESOLUÇÃO
                 if (isShiny) {
-                    // Tenta 'official-artwork' shiny, depois 'home' shiny
                     imageUrl = sprites['official-artwork']?.front_shiny || 
                                sprites.home?.front_shiny;
-                    // Fallback para pixel art shiny se high-res falhar
-                    if (!imageUrl) {
-                        imageUrl = data.sprites.front_shiny;
-                    }
                 }
 
-                // Se não for shiny, ou se o shiny high-res não existir
+                // 2. Se não for shiny (ou se a imagem shiny high-res não existir),
+                //    tenta pegar a imagem Normal de ALTA RESOLUÇÃO
                 if (!imageUrl) {
-                    // Tenta 'official-artwork' normal, depois 'home' normal
                     imageUrl = sprites['official-artwork']?.front_default || 
                                sprites.home?.front_default;
-                    // Fallback final para pixel art se tudo mais falhar
-                    if (!imageUrl) {
-                        imageUrl = data.sprites.front_default;
-                    }
                 }
 
-                // Carregar a imagem antes de mostrar
+                // 3. VERIFICAÇÃO DE QUALIDADE (NOVO)
+                // Se, após todas as tentativas, a imageUrl ainda for nula,
+                // significa que este Pokémon SÓ tem pixel art (ex: Ditto).
+                // Nesse caso, vamos sortear outro.
+                if (!imageUrl) {
+                    console.log(`Pokémon ${data.name} (ID: ${randomId}) não tem imagem de alta resolução. Sorteando outro...`);
+                    // Chama a função novamente com um pequeno atraso
+                    setTimeout(fetchRandomPokemon, 100); 
+                    return; // Para a execução desta tentativa
+                }
+
+                // 4. Configura os handlers ANTES de definir o .src
+                
+                // Handler de Sucesso (a imagem carregou)
                 pokemonImageEl.onload = () => {
                     pokemonLoaderEl.classList.add('hidden');
                     pokemonImageEl.classList.remove('hidden');
                     pokemonImageEl.classList.add('opacity-100');
                 };
                 
-                // Fallback de erro de carregamento (ex: imagem 404)
+                // Handler de Erro (a imagem deu 404, etc) (NOVO)
                 pokemonImageEl.onerror = () => {
-                    // ATUALIZADO: de console.error para console.warn, pois isso é um fallback esperado
-                    console.warn(`Falha ao carregar imagem: ${imageUrl}. Tentando fallback final.`);
-                    // Tenta o fallback mais garantido (pixel art)
-                    pokemonImageEl.src = data.sprites.front_default;
-                    pokemonImageEl.onerror = null; // Evita loop de erro
+                    console.warn(`Falha ao carregar a imagem: ${imageUrl}. Sorteando outro Pokémon...`);
+                    pokemonImageEl.onerror = null; // Limpa o handler para evitar loops
+                    // Tenta buscar outro Pokémon
+                    setTimeout(fetchRandomPokemon, 100); // Adiciona um pequeno atraso
                 };
 
+                // 5. Define a fonte da imagem (agora com handlers prontos)
                 pokemonImageEl.src = imageUrl;
                 pokemonImageEl.alt = `Imagem de ${data.name} ${isShiny ? '(shiny)' : ''}`;
 
             } catch (error) {
-                console.error("Erro ao buscar Pokémon:", error);
-                // Não mostra um erro, apenas esconde o loader
-                pokemonLoaderEl.classList.add('hidden');
+                console.error("Erro ao buscar Pokémon (catch):", error);
+                // Se o próprio fetch falhar (ex: rede offline), tenta de novo após 1s
+                setTimeout(fetchRandomPokemon, 1000);
             }
         }
         
@@ -469,14 +529,23 @@
          * Função principal para buscar todos os dados
          */
         function fetchAllData() {
-            fetchWeather();
+            // NOVO: Reseta o timer da barra de progresso
+            lastRefreshTime = Date.now();
             
-            // ATUALIZADO: Busca os feeds com limite de 3
-            fetchRssFeed(POKEMONBLOG_URL, pokemonBlogFeedEl, 8, "PokemonBlog", "orange");
-            //fetchRssFeed(POKEMONDB_URL, pokemonDbFeedEl, 3, "PokemonDB", "blue");
-            //fetchRssFeed(POKEMANIACAL_URL, pokeManiacalFeedEl, 3, "Pokemaniacal", "purple");
+            // --- Lógica para resetar a barra visualmente ---
+            // 1. Desliga a transição para o reset ser instantâneo
+            progressBarEl.style.transition = 'none';
+            // 2. Reseta o transform
+            progressBarEl.style.transform = 'scaleX(0)';
+            // 3. Força o navegador a "ver" a mudança (reflow)
+            progressBarEl.offsetHeight; 
+            // 4. Religa a transição para as próximas atualizações
+            progressBarEl.style.transition = `transform ${PROGRESS_BAR_UPDATE_INTERVAL}ms linear`;
+            // --- Fim da lógica de reset ---
 
-            // NOVO: Busca o Pokémon aleatório
+            // Busca os dados
+            fetchWeather();
+            fetchRssFeed(POKEMONBLOG_URL, pokemonBlogFeedEl, 8, "PokemonBlog", "orange");
             fetchRandomPokemon();
         }
 
@@ -488,21 +557,25 @@
             updateGreeting();
             setupFocusTask();
             
-            // ATUALIZADO: Adicionado um pequeno atraso (100ms) ao primeiro fetchAllData.
-            // Isso ajuda a previnir problemas de "race condition" no carregamento inicial da página,
-            // garantindo que o Pokémon e o clima carreguem na primeira vez.
+            // NOVO: Define o tempo inicial e a transição da barra
+            lastRefreshTime = Date.now();
+            progressBarEl.style.transition = `transform ${PROGRESS_BAR_UPDATE_INTERVAL}ms linear`;
+
             setTimeout(fetchAllData, 100); 
 
             // Cria ícones estáticos
             lucide.createIcons();
             
-            // CORRIGIDO: Linha incompleta que causava o SyntaxError
-            // Intervalo do relógio (agora a cada segundo)
+            // Intervalo do relógio (a cada segundo)
             setInterval(updateClockAndDate, CLOCK_INTERVAL); 
             // Intervalo de atualização dos feeds/clima (a cada 5 min)
             setInterval(fetchAllData, REFRESH_INTERVAL);
+            
+            // NOVO: Intervalo da barra de progresso (a cada segundo)
+            setInterval(updateProgressBar, PROGRESS_BAR_UPDATE_INTERVAL);
         });
 
     </script>
 </body>
 </html>
+
