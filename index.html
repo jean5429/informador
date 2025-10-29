@@ -106,13 +106,12 @@
                     </svg>
                 </div>
                 
-                <!-- Ícone de Shiny (absoluto ao container) -->
-                <!-- CORREÇÃO: Adicionado z-10 para garantir que fique sobre a imagem -->
-                <i data-lucide="sparkles" id="shiny-icon" class="hidden absolute top-4 right-4 w-10 h-10 text-yellow-300 animate-pulse z-10" style="filter: drop-shadow(0 0 5px rgba(253, 224, 71, 0.8));"></i>
-                
                 <!-- Imagem será injetada aqui -->
                 <img id="pokemon-image" src="" alt="Pokémon Aleatório" class="hidden opacity-0 transition-opacity duration-500 ease-in-out h-auto" style="max-height: 100%; max-width: 100%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));">
             
+                <!-- Ícone de Shiny (REMOVIDO) -->
+                <!-- O ícone 'absolute' foi removido. A lógica agora está no nome do Pokémon -->
+                
                 <!-- Nome e Número do Pokémon -->
                 <div id="pokemon-info" class="hidden absolute bottom-4 right-4 p-2 bg-slate-900/50 backdrop-blur-sm rounded-lg text-right shadow-lg z-10">
                     <span id="pokemon-name" class="block text-lg font-bold text-white" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);"></span>
@@ -281,7 +280,7 @@
 
         const pokemonLoaderEl = document.getElementById('pokemon-loader');
         const pokemonImageEl = document.getElementById('pokemon-image');
-        const shinyIconEl = document.getElementById('shiny-icon'); 
+        // const shinyIconEl = document.getElementById('shiny-icon'); // REMOVIDO
         const pokemonInfoEl = document.getElementById('pokemon-info');
         const pokemonNameEl = document.getElementById('pokemon-name');
         const pokemonIdEl = document.getElementById('pokemon-id');
@@ -473,7 +472,7 @@
                 pokemonLoaderEl.classList.remove('hidden');
                 pokemonImageEl.classList.add('hidden');
                 pokemonImageEl.classList.remove('opacity-100'); 
-                shinyIconEl.classList.add('hidden');
+                // shinyIconEl.classList.add('hidden'); // REMOVIDO
                 pokemonInfoEl.classList.add('hidden');
 
                 const randomId = Math.floor(Math.random() * 1025) + 1;
@@ -484,8 +483,6 @@
                 const data = await response.json();
 
                 isShiny = Math.random() < 0.01;
-                // Para forçar o teste de shiny:
-                // isShiny = true; 
                 
                 const sprites = data.sprites.other;
                 let imageUrl = null;
@@ -511,24 +508,28 @@
                     pokemonImageEl.classList.remove('hidden');
                     pokemonImageEl.classList.add('opacity-100');
 
-                    const pokeName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+                    let pokeName = data.name.charAt(0).toUpperCase() + data.name.slice(1); // MUDADO para 'let'
                     const pokeId = `#${String(data.id).padStart(4, '0')}`;
+                    
+                    // SOLUÇÃO: Adiciona o emoji diretamente ao nome se for shiny
+                    if (isShiny) {
+                        pokeName += ' ✨';
+                    }
                     
                     pokemonNameEl.textContent = pokeName;
                     pokemonIdEl.textContent = pokeId;
                     pokemonInfoEl.classList.remove('hidden');
 
-                    if (isShiny) {
-                        shinyIconEl.classList.remove('hidden');
-                        // CORREÇÃO: Força o Lucide a renderizar o ícone agora visível
-                        lucide.createIcons();
-                    }
+                    // if (isShiny) { // LÓGICA ANTIGA REMOVIDA
+                    //     shinyIconEl.classList.remove('hidden');
+                    //     lucide.createIcons();
+                    // }
                 };
                 
                 pokemonImageEl.onerror = () => {
                     console.warn(`Falha ao carregar a imagem: ${imageUrl}. Sorteando outro Pokémon...`);
                     pokemonImageEl.onerror = null;
-                    shinyIconEl.classList.add('hidden');
+                    // shinyIconEl.classList.add('hidden'); // REMOVIDO
                     pokemonInfoEl.classList.add('hidden');
                     setTimeout(fetchRandomPokemon, 100);
                 };
@@ -537,7 +538,7 @@
                 pokemonImageEl.alt = `Imagem de ${data.name} ${isShiny ? '(shiny)' : ''}`;
 
             } catch (error) {
-                shinyIconEl.classList.add('hidden');
+                // shinyIconEl.classList.add('hidden'); // REMOVIDO
                 pokemonInfoEl.classList.add('hidden');
                 console.error("Erro ao buscar Pokémon (catch):", error);
                 setTimeout(fetchRandomPokemon, 1000);
@@ -578,4 +579,6 @@
     </script>
 </body>
 </html>
+
+
 
