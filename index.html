@@ -10,7 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Fonte Inter (Moderna e Legível) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
@@ -19,7 +19,9 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a; /* bg-slate-900 */
             color: #e2e8f0; /* text-slate-200 */
-            overflow: hidden; /* Impede a rolagem do body */
+            /* ATUALIZADO: overflow:hidden removido para permitir rolagem em mobile */
+            /* ATUALIZADO: Adicionado overflow-x-hidden para evitar rolagem horizontal */
+            overflow-x: hidden;
         }
         
         /* Estilo do Loader Padrão */
@@ -64,10 +66,15 @@
         }
     </style>
 </head>
-<body class="h-screen w-full flex flex-col lg:flex-row">
+<!-- ATUALIZADO: 
+  - min-h-screen garante que a tela seja preenchida em mobile (permitindo rolagem)
+  - lg:h-screen e lg:overflow-hidden mantêm o comportamento de desktop (sem rolagem)
+-->
+<body class="min-h-screen w-full flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden">
 
     <!-- Coluna Principal (Conteúdo) -->
-    <div class="flex-1 flex flex-col p-8 md:p-12 lg:w-2/3 h-full">
+    <!-- ATUALIZADO: h-full removido para mobile, lg:h-full adicionado para desktop -->
+    <div class="flex-1 flex flex-col p-8 md:p-12 lg:w-2/3 lg:h-full">
 
         <!-- PEÇA PRINCIPAL: Eventos -->
         <main class="flex-1 flex flex-col min-h-0">
@@ -75,20 +82,25 @@
             <section class="flex-shrink-0">
                 <div class="flex items-center gap-4 mb-6">
                     <i data-lucide="calendar-clock" class="text-green-400 w-10 h-10 flex-shrink-0"></i>
-                    <h2 class="text-5xl font-bold">Eventos Pokémon</h2>
+                    <!-- ATUALIZADO: Fonte responsiva -->
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Eventos Pokémon</h2>
                 </div>
                 <!-- Detalhes dos eventos aumentados -->
                 <div class="space-y-8">
                     <!-- Scarlet/Violet -->
                     <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6">
-                        <h3 class="text-3xl font-medium text-purple-300">Scarlet & Violet</h3>
-                        <p class="text-2xl text-gray-200 mt-2">Ranked Battles Season 35</p>
+                        <!-- ATUALIZADO: Fonte responsiva -->
+                        <h3 class="text-2xl lg:text-3xl font-medium text-purple-300">Scarlet & Violet</h3>
+                        <!-- ATUALIZADO: Fonte responsiva -->
+                        <p class="text-xl lg:text-2xl text-gray-200 mt-2">Ranked Battles Season 35</p>
                         <p class="text-lg text-gray-400 mt-1">Termina: 31 de Outubro, 2025</p>
                     </div>
                     <!-- Legends ZA -->
                     <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6">
-                        <h3 class="text-3xl font-medium text-blue-300">Legends Z-A</h3>
-                        <p class="text-2xl text-gray-200 mt-2">Ranked Battles Season 1</p>
+                        <!-- ATUALIZADO: Fonte responsiva -->
+                        <h3 class="text-2xl lg:text-3xl font-medium text-blue-300">Legends Z-A</h3>
+                        <!-- ATUALIZADO: Fonte responsiva -->
+                        <p class="text-xl lg:text-2xl text-gray-200 mt-2">Ranked Battles Season 1</p>
                         <p class="text-lg text-gray-400 mt-1">Termina: 04/Nov/2025, 9:59 p.m. PST</p>
                     </div>
                 </div>
@@ -123,7 +135,8 @@
                     </div>
                     <!-- Localização -->
                     <div class="text-right">
-                        <h2 class="text-2xl font-bold">Clima Atual</h2>
+                        <!-- ATUALIZADO: Fonte responsiva -->
+                        <h2 class="text-xl lg:text-2xl font-bold">Clima Atual</h2>
                         <div id="weather-location" class="text-lg text-gray-400">
                             Americana, SP
                         </div>
@@ -134,13 +147,19 @@
     </div>
 
     <!-- Coluna da Barra Lateral (Feeds e Relógio) -->
-    <aside class="lg:w-1/3 lg:h-full bg-slate-800/50 backdrop-blur-md border-l border-slate-700/50">
+    <!-- ATUALIZADO: 
+      - w-full para mobile
+      - lg:border-l (borda só no desktop)
+      - lg:overflow-y-auto (rolagem da sidebar só no desktop)
+    -->
+    <aside class="w-full lg:w-1/3 lg:h-full bg-slate-800/50 backdrop-blur-md lg:border-l border-slate-700/50 lg:overflow-y-auto sidebar-scroll">
         <div class="p-8 md:p-10 space-y-8">
             
             <!-- Seção: Relógio, Data e Foco -->
             <section>
                 <!-- Relógio -->
-                <div id="clock" class="text-6xl font-bold text-indigo-400">
+                <!-- ATUALIZADO: Fonte responsiva -->
+                <div id="clock" class="text-5xl lg:text-6xl font-bold text-indigo-400">
                     --:--
                 </div>
                 <!-- Data -->
@@ -150,7 +169,8 @@
 
                 <!-- Saudação e Foco -->
                 <div class="mt-4">
-                    <h1 class="text-2xl font-bold" id="greeting"></h1>
+                    <!-- ATUALIZADO: Fonte responsiva -->
+                    <h1 class="text-xl lg:text-2xl font-bold" id="greeting"></h1>
                     <p class="text-base text-gray-400 mt-1">Seu foco para hoje é:</p>
                     <div id="focus-task" 
                          contenteditable="true" 
@@ -165,7 +185,8 @@
             <section>
                 <div class="flex items-center gap-4 mb-3">
                     <i data-lucide="rss" class="text-orange-400 w-7 h-7 flex-shrink-0"></i>
-                    <h2 class="text-2xl font-bold">PokemonBlog</h2>
+                    <!-- ATUALIZADO: Fonte responsiva -->
+                    <h2 class="text-xl lg:text-2xl font-bold">PokemonBlog</h2>
                 </div>
                 <ul id="pokemonblog-feed" class="space-y-3 feed-container">
                     <!-- Feed será injetado aqui -->
@@ -222,7 +243,7 @@
         }
 
         /**
-         * ATUALIZADO: Formata uma string de data para um objeto { date, time }
+         * Formata uma string de data para um objeto { date, time }
          */
         function formatFeedDate(dateString) {
             const emptyResult = { date: null, time: null };
@@ -389,13 +410,14 @@
                 const tempC = data.temperature.replace('+', '').trim(); 
                 const iconName = getWeatherIcon(weatherDesc);
 
+                // ATUALIZADO: HTML com classes responsivas para ícone e fontes
                 weatherContentEl.innerHTML = `
                     <div id="weather-icon">
-                        <i data-lucide="${iconName}" class="w-20 h-20 text-indigo-400"></i>
+                        <i data-lucide="${iconName}" class="w-16 h-16 lg:w-20 lg:h-20 text-indigo-400"></i>
                     </div>
                     <div>
-                        <div class="text-5xl font-bold">${tempC}</div>
-                        <div class="text-xl text-gray-300">${weatherDesc}</div>
+                        <div class="text-4xl lg:text-5xl font-bold">${tempC}</div>
+                        <div class="text-lg lg:text-xl text-gray-300">${weatherDesc}</div>
                     </div>
                 `;
                 weatherLocationEl.textContent = `Americana, SP`;
@@ -447,7 +469,6 @@
                     const link = (item.querySelector("link")?.textContent || item.querySelector("link")?.getAttribute('href')) || '#';
                     
                     const dateString = item.querySelector("pubDate")?.textContent || item.querySelector("published")?.textContent || item.querySelector("updated")?.textContent;
-                    // --- ATUALIZADO: Agora é um objeto { date, time } ---
                     const dateTime = formatFeedDate(dateString);
 
                     if (link.includes('#comments')) return; 
@@ -457,7 +478,6 @@
                     const li = document.createElement('li');
                     li.className = "border-b border-slate-700/50 pb-3 last:border-b-0";
                     
-                    // --- ATUALIZADO: HTML para incluir o emoji e o contêiner de data/hora ---
                     li.innerHTML = `
                         <a href="${link}" target="_blank" rel="noopener noreferrer" 
                            class="text-sm text-gray-200 font-medium hover:text-${hoverColor}-400 transition-colors duration-200 flex items-center gap-2.5">
@@ -468,7 +488,7 @@
                             <!-- Span para o título (flex-1 faz ele ocupar o espaço restante) -->
                             <span class="flex-1">${title}</span>
 
-                            <!-- NOVO: Contêiner de Data/Hora (só aparece se a data for válida) -->
+                            <!-- Contêiner de Data/Hora (só aparece se a data for válida) -->
                             ${dateTime.date ? `
                                 <div class="flex flex-col items-end flex-shrink-0 -space-y-0.5">
                                     <span class="text-xs text-slate-400 font-mono">${dateTime.date}</span>
