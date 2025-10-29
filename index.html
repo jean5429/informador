@@ -19,8 +19,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a; /* bg-slate-900 */
             color: #e2e8f0; /* text-slate-200 */
-            /* ATUALIZADO: overflow:hidden removido para permitir rolagem em mobile */
-            /* ATUALIZADO: Adicionado overflow-x-hidden para evitar rolagem horizontal */
             overflow-x: hidden;
         }
         
@@ -66,14 +64,9 @@
         }
     </style>
 </head>
-<!-- ATUALIZADO: 
-  - min-h-screen garante que a tela seja preenchida em mobile (permitindo rolagem)
-  - lg:h-screen e lg:overflow-hidden mantêm o comportamento de desktop (sem rolagem)
--->
 <body class="min-h-screen w-full flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden">
 
     <!-- Coluna Principal (Conteúdo) -->
-    <!-- ATUALIZADO: h-full removido para mobile, lg:h-full adicionado para desktop -->
     <div class="flex-1 flex flex-col p-8 md:p-12 lg:w-2/3 lg:h-full">
 
         <!-- PEÇA PRINCIPAL: Eventos -->
@@ -82,24 +75,18 @@
             <section class="flex-shrink-0">
                 <div class="flex items-center gap-4 mb-6">
                     <i data-lucide="calendar-clock" class="text-green-400 w-10 h-10 flex-shrink-0"></i>
-                    <!-- ATUALIZADO: Fonte responsiva -->
                     <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Eventos Pokémon</h2>
                 </div>
-                <!-- Detalhes dos eventos aumentados -->
                 <div class="space-y-8">
                     <!-- Scarlet/Violet -->
                     <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6">
-                        <!-- ATUALIZADO: Fonte responsiva -->
                         <h3 class="text-2xl lg:text-3xl font-medium text-purple-300">Scarlet & Violet</h3>
-                        <!-- ATUALIZADO: Fonte responsiva -->
                         <p class="text-xl lg:text-2xl text-gray-200 mt-2">Ranked Battles Season 35</p>
                         <p class="text-lg text-gray-400 mt-1">Termina: 31 de Outubro, 2025</p>
                     </div>
                     <!-- Legends ZA -->
                     <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6">
-                        <!-- ATUALIZADO: Fonte responsiva -->
                         <h3 class="text-2xl lg:text-3xl font-medium text-blue-300">Legends Z-A</h3>
-                        <!-- ATUALIZADO: Fonte responsiva -->
                         <p class="text-xl lg:text-2xl text-gray-200 mt-2">Ranked Battles Season 1</p>
                         <p class="text-lg text-gray-400 mt-1">Termina: 04/Nov/2025, 9:59 p.m. PST</p>
                     </div>
@@ -107,7 +94,8 @@
             </section>
 
             <!-- Container do Pokémon (cresce para preencher o espaço) -->
-            <section id="pokemon-container" class="flex-1 flex flex-col justify-center items-center p-4 min-h-0">
+            <!-- ATUALIZADO: 'relative' é essencial para o 'absolute' do ícone/info -->
+            <section id="pokemon-container" class="flex-1 flex flex-col justify-center items-center p-4 min-h-0 relative">
                 <!-- Loader Específico do Pokémon (Greatball) -->
                 <div id="pokemon-loader">
                     <svg class="greatball-spin" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
@@ -117,25 +105,33 @@
                         <path stroke="#e2e8f0" fill="#e2e8f0" stroke-linecap="round" stroke-linejoin="round" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
                     </svg>
                 </div>
+                
+                <!-- Ícone de Shiny (absoluto ao container) -->
+                <!-- CORREÇÃO: Adicionado z-10 para garantir que fique sobre a imagem -->
+                <i data-lucide="sparkles" id="shiny-icon" class="hidden absolute top-4 right-4 w-10 h-10 text-yellow-300 animate-pulse z-10" style="filter: drop-shadow(0 0 5px rgba(253, 224, 71, 0.8));"></i>
+                
                 <!-- Imagem será injetada aqui -->
                 <img id="pokemon-image" src="" alt="Pokémon Aleatório" class="hidden opacity-0 transition-opacity duration-500 ease-in-out h-auto" style="max-height: 100%; max-width: 100%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));">
+            
+                <!-- Nome e Número do Pokémon -->
+                <div id="pokemon-info" class="hidden absolute bottom-4 right-4 p-2 bg-slate-900/50 backdrop-blur-sm rounded-lg text-right shadow-lg z-10">
+                    <span id="pokemon-name" class="block text-lg font-bold text-white" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);"></span>
+                    <span id="pokemon-id" class="block text-sm font-mono text-slate-300"></span>
+                </div>
             </section>
         </main>
 
         <!-- RODAPÉ: Widget de Clima -->
         <footer class="flex-shrink-0 mt-8">
-            <!-- Widget de Clima Redesenhado -->
             <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-lg">
                 <div class="flex justify-between items-center">
                     <!-- Informações do Clima -->
                     <div id="weather-content" class="flex items-center gap-4">
-                        <!-- Conteúdo do Clima será injetado aqui -->
                         <div class="loader !m-0"></div>
                         <p class="text-xl">Carregando clima...</p>
                     </div>
                     <!-- Localização -->
                     <div class="text-right">
-                        <!-- ATUALIZADO: Fonte responsiva -->
                         <h2 class="text-xl lg:text-2xl font-bold">Clima Atual</h2>
                         <div id="weather-location" class="text-lg text-gray-400">
                             Americana, SP
@@ -147,29 +143,19 @@
     </div>
 
     <!-- Coluna da Barra Lateral (Feeds e Relógio) -->
-    <!-- ATUALIZADO: 
-      - w-full para mobile
-      - lg:border-l (borda só no desktop)
-      - lg:overflow-y-auto (rolagem da sidebar só no desktop)
-    -->
     <aside class="w-full lg:w-1/3 lg:h-full bg-slate-800/50 backdrop-blur-md lg:border-l border-slate-700/50 lg:overflow-y-auto sidebar-scroll">
         <div class="p-8 md:p-10 space-y-8">
             
             <!-- Seção: Relógio, Data e Foco -->
             <section>
-                <!-- Relógio -->
-                <!-- ATUALIZADO: Fonte responsiva -->
                 <div id="clock" class="text-5xl lg:text-6xl font-bold text-indigo-400">
                     --:--
                 </div>
-                <!-- Data -->
                 <div id="date" class="text-xl text-gray-300 font-light">
                     -- de ------ de ----
                 </div>
 
-                <!-- Saudação e Foco -->
                 <div class="mt-4">
-                    <!-- ATUALIZADO: Fonte responsiva -->
                     <h1 class="text-xl lg:text-2xl font-bold" id="greeting"></h1>
                     <p class="text-base text-gray-400 mt-1">Seu foco para hoje é:</p>
                     <div id="focus-task" 
@@ -185,11 +171,9 @@
             <section>
                 <div class="flex items-center gap-4 mb-3">
                     <i data-lucide="rss" class="text-orange-400 w-7 h-7 flex-shrink-0"></i>
-                    <!-- ATUALIZADO: Fonte responsiva -->
                     <h2 class="text-xl lg:text-2xl font-bold">PokemonBlog</h2>
                 </div>
                 <ul id="pokemonblog-feed" class="space-y-3 feed-container">
-                    <!-- Feed será injetado aqui -->
                     <div class="loader"></div>
                 </ul>
             </section>
@@ -197,9 +181,8 @@
         </div>
     </aside>
 
-    <!-- NOVO: Barra de Progresso de Atualização -->
+    <!-- Barra de Progresso de Atualização -->
     <div id="refresh-progress-bar-container" class="fixed bottom-0 left-0 w-full h-1 bg-slate-700 z-50 overflow-hidden">
-        <!-- A animação desta barra será controlada via JS -->
         <div id="refresh-progress-bar" class="h-1 bg-indigo-400" style="width: 100%; transform: scaleX(0); transform-origin: left;"></div>
     </div>
 
@@ -248,18 +231,17 @@
         function formatFeedDate(dateString) {
             const emptyResult = { date: null, time: null };
             if (!dateString) {
-                return emptyResult; // Retorna vazio se não houver data
+                return emptyResult;
             }
             try {
                 const date = new Date(dateString);
-                // Verifica se a data é válida
                 if (isNaN(date.getTime())) {
                     console.warn("Data de feed inválida:", dateString);
-                    return emptyResult; // Data inválida
+                    return emptyResult;
                 }
                 
                 const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é base 0
+                const month = String(date.getMonth() + 1).padStart(2, '0');
                 const hour = String(date.getHours()).padStart(2, '0');
                 const minute = String(date.getMinutes()).padStart(2, '0');
                 
@@ -269,7 +251,7 @@
                 };
             } catch (error) {
                 console.warn("Não foi possível formatar a data:", dateString, error);
-                return emptyResult; // Retorna vazio em caso de erro
+                return emptyResult;
             }
         }
 
@@ -299,7 +281,11 @@
 
         const pokemonLoaderEl = document.getElementById('pokemon-loader');
         const pokemonImageEl = document.getElementById('pokemon-image');
-
+        const shinyIconEl = document.getElementById('shiny-icon'); 
+        const pokemonInfoEl = document.getElementById('pokemon-info');
+        const pokemonNameEl = document.getElementById('pokemon-name');
+        const pokemonIdEl = document.getElementById('pokemon-id');
+        
         const progressBarEl = document.getElementById('refresh-progress-bar');
 
         // --- VARIÁVEIS DE ESTADO ---
@@ -308,9 +294,6 @@
 
         // --- FUNÇÕES DE ATUALIZAÇÃO ---
 
-        /**
-         * Atualiza a barra de progresso de 5 minutos.
-         */
         function updateProgressBar() {
             const now = Date.now();
             const elapsed = now - lastRefreshTime;
@@ -323,10 +306,6 @@
             progressBarEl.style.transform = `scaleX(${progress})`;
         }
 
-
-        /**
-         * Atualiza o relógio e a data.
-         */
         let currentDateString = "";
         function updateClockAndDate() {
             const now = new Date();
@@ -343,9 +322,6 @@
             }
         }
 
-        /**
-         * Define a saudação
-         */
         function updateGreeting() {
             const hour = new Date().getHours();
             if (hour < 12) {
@@ -357,9 +333,6 @@
             }
         }
         
-        /**
-         * Carrega e salva a tarefa de foco
-         */
         function setupFocusTask() {
             const savedFocus = localStorage.getItem('dailyFocusTask');
             focusTaskEl.textContent = savedFocus || '[Clique para definir seu foco]';
@@ -374,9 +347,6 @@
             });
         }
 
-        /**
-         * Mapeia a descrição do tempo para um ícone Lucide
-         */
         function getWeatherIcon(description) {
             const desc = description.toLowerCase();
             if (desc.includes('sunny') || desc.includes('clear')) return 'sun';
@@ -389,9 +359,6 @@
             return 'sun'; // Padrão
         }
 
-        /**
-         * Busca e exibe o clima
-         */
         async function fetchWeather() {
             try {
                 const response = await fetch(WEATHER_URL);
@@ -410,7 +377,6 @@
                 const tempC = data.temperature.replace('+', '').trim(); 
                 const iconName = getWeatherIcon(weatherDesc);
 
-                // ATUALIZADO: HTML com classes responsivas para ícone e fontes
                 weatherContentEl.innerHTML = `
                     <div id="weather-icon">
                         <i data-lucide="${iconName}" class="w-16 h-16 lg:w-20 lg:h-20 text-indigo-400"></i>
@@ -429,9 +395,6 @@
             }
         }
 
-        /**
-         * Função genérica para buscar feeds RSS (XML)
-         */
         async function fetchRssFeed(url, container, limit, feedName, hoverColor) {
             try {
                 const response = await fetch(url); 
@@ -482,13 +445,10 @@
                         <a href="${link}" target="_blank" rel="noopener noreferrer" 
                            class="text-sm text-gray-200 font-medium hover:text-${hoverColor}-400 transition-colors duration-200 flex items-center gap-2.5">
                             
-                            <!-- Span para o emoji -->
                             <span class="text-lg" title="${emoji}">${emoji}</span> 
                             
-                            <!-- Span para o título (flex-1 faz ele ocupar o espaço restante) -->
                             <span class="flex-1">${title}</span>
 
-                            <!-- Contêiner de Data/Hora (só aparece se a data for válida) -->
                             ${dateTime.date ? `
                                 <div class="flex flex-col items-end flex-shrink-0 -space-y-0.5">
                                     <span class="text-xs text-slate-400 font-mono">${dateTime.date}</span>
@@ -506,17 +466,16 @@
             }
         }
 
-        /**
-         * ATUALIZADO: Busca um Pokémon aleatório, garantindo alta resolução.
-         */
         async function fetchRandomPokemon() {
+            let isShiny = false; 
+
             try {
-                // Mostrar loader e esconder imagem antiga
                 pokemonLoaderEl.classList.remove('hidden');
                 pokemonImageEl.classList.add('hidden');
                 pokemonImageEl.classList.remove('opacity-100'); 
+                shinyIconEl.classList.add('hidden');
+                pokemonInfoEl.classList.add('hidden');
 
-                // ID Aleatório (Gen 1-9, ID 1 a 1025)
                 const randomId = Math.floor(Math.random() * 1025) + 1;
                 
                 const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
@@ -524,70 +483,75 @@
 
                 const data = await response.json();
 
-                // Lógica do Shiny (1% de chance)
-                const isShiny = Math.random() < 0.01;
+                isShiny = Math.random() < 0.01;
+                // Para forçar o teste de shiny:
+                // isShiny = true; 
                 
                 const sprites = data.sprites.other;
                 let imageUrl = null;
                 
-                // 1. Tenta pegar a imagem Shiny de ALTA RESOLUÇÃO
                 if (isShiny) {
                     imageUrl = sprites['official-artwork']?.front_shiny || 
                                sprites.home?.front_shiny;
                 }
 
-                // 2. Se não for shiny (ou se a imagem shiny high-res não existir),
-                //    tenta pegar a imagem Normal de ALTA RESOLUÇÃO
                 if (!imageUrl) {
                     imageUrl = sprites['official-artwork']?.front_default || 
                                sprites.home?.front_default;
                 }
 
-                // 3. VERIFICAÇÃO DE QUALIDADE (NOVO)
                 if (!imageUrl) {
                     console.log(`Pokémon ${data.name} (ID: ${randomId}) não tem imagem de alta resolução. Sorteando outro...`);
                     setTimeout(fetchRandomPokemon, 100); 
-                    return; // Para a execução desta tentativa
+                    return;
                 }
 
-                // 4. Configura os handlers ANTES de definir o .src
                 pokemonImageEl.onload = () => {
                     pokemonLoaderEl.classList.add('hidden');
                     pokemonImageEl.classList.remove('hidden');
                     pokemonImageEl.classList.add('opacity-100');
+
+                    const pokeName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+                    const pokeId = `#${String(data.id).padStart(4, '0')}`;
+                    
+                    pokemonNameEl.textContent = pokeName;
+                    pokemonIdEl.textContent = pokeId;
+                    pokemonInfoEl.classList.remove('hidden');
+
+                    if (isShiny) {
+                        shinyIconEl.classList.remove('hidden');
+                        // CORREÇÃO: Força o Lucide a renderizar o ícone agora visível
+                        lucide.createIcons();
+                    }
                 };
                 
                 pokemonImageEl.onerror = () => {
                     console.warn(`Falha ao carregar a imagem: ${imageUrl}. Sorteando outro Pokémon...`);
-                    pokemonImageEl.onerror = null; // Limpa o handler para evitar loops
-                    setTimeout(fetchRandomPokemon, 100); // Adiciona um pequeno atraso
+                    pokemonImageEl.onerror = null;
+                    shinyIconEl.classList.add('hidden');
+                    pokemonInfoEl.classList.add('hidden');
+                    setTimeout(fetchRandomPokemon, 100);
                 };
 
-                // 5. Define a fonte da imagem (agora com handlers prontos)
                 pokemonImageEl.src = imageUrl;
                 pokemonImageEl.alt = `Imagem de ${data.name} ${isShiny ? '(shiny)' : ''}`;
 
             } catch (error) {
+                shinyIconEl.classList.add('hidden');
+                pokemonInfoEl.classList.add('hidden');
                 console.error("Erro ao buscar Pokémon (catch):", error);
                 setTimeout(fetchRandomPokemon, 1000);
             }
         }
         
-        /**
-         * Função principal para buscar todos os dados
-         */
         function fetchAllData() {
-            // Reseta o timer da barra de progresso
             lastRefreshTime = Date.now();
             
-            // --- Lógica para resetar a barra visualmente ---
             progressBarEl.style.transition = 'none';
             progressBarEl.style.transform = 'scaleX(0)';
             progressBarEl.offsetHeight; 
             progressBarEl.style.transition = `transform ${PROGRESS_BAR_UPDATE_INTERVAL}ms linear`;
-            // --- Fim da lógica de reset ---
 
-            // Busca os dados
             fetchWeather();
             fetchRssFeed(POKEMONBLOG_URL, pokemonBlogFeedEl, 8, "PokemonBlog", "orange");
             fetchRandomPokemon();
