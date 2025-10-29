@@ -185,8 +185,7 @@
 
     <!-- CÓDIGO SCRIPT -->
     <script>
-        // --- NOVO: EMOJI E MAPA DE PALAVRAS-CHAVE ---
-        // Este objeto mapeia palavras-chave (em minúsculas) para emojis
+        // --- EMOJI E MAPA DE PALAVRAS-CHAVE ---
         const emojiMap = {
             'v-max': '⚡️',
             'gigantamax': '💥',
@@ -211,16 +210,46 @@
         };
 
         /**
-         * NOVO: Retorna um emoji baseado no título da notícia.
+         * Retorna um emoji baseado no título da notícia.
          */
         function getEmojiForTitle(title) {
-            // Itera pelas chaves do nosso mapa
             for (const keyword in emojiMap) {
                 if (title.includes(keyword)) {
-                    return emojiMap[keyword]; // Retorna o emoji correspondente
+                    return emojiMap[keyword];
                 }
             }
-            return '📰'; // Emoji padrão se nenhuma palavra-chave for encontrada
+            return '📰'; // Padrão
+        }
+
+        /**
+         * ATUALIZADO: Formata uma string de data para um objeto { date, time }
+         */
+        function formatFeedDate(dateString) {
+            const emptyResult = { date: null, time: null };
+            if (!dateString) {
+                return emptyResult; // Retorna vazio se não houver data
+            }
+            try {
+                const date = new Date(dateString);
+                // Verifica se a data é válida
+                if (isNaN(date.getTime())) {
+                    console.warn("Data de feed inválida:", dateString);
+                    return emptyResult; // Data inválida
+                }
+                
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês é base 0
+                const hour = String(date.getHours()).padStart(2, '0');
+                const minute = String(date.getMinutes()).padStart(2, '0');
+                
+                return {
+                    date: `${day}/${month}`,
+                    time: `${hour}:${minute}`
+                };
+            } catch (error) {
+                console.warn("Não foi possível formatar a data:", dateString, error);
+                return emptyResult; // Retorna vazio em caso de erro
+            }
         }
 
 
@@ -250,17 +279,16 @@
         const pokemonLoaderEl = document.getElementById('pokemon-loader');
         const pokemonImageEl = document.getElementById('pokemon-image');
 
-        // NOVO: Elemento da barra de progresso
         const progressBarEl = document.getElementById('refresh-progress-bar');
 
         // --- VARIÁVEIS DE ESTADO ---
-        let lastRefreshTime = 0; // NOVO: Rastreia o tempo da última atualização
+        let lastRefreshTime = 0;
 
 
         // --- FUNÇÕES DE ATUALIZAÇÃO ---
 
         /**
-         * NOVO: Atualiza a barra de progresso de 5 minutos.
+         * Atualiza a barra de progresso de 5 minutos.
          */
         function updateProgressBar() {
             const now = Date.now();
@@ -268,7 +296,7 @@
             let progress = (elapsed / REFRESH_INTERVAL);
             
             if (progress >= 1) {
-                progress = 1; // Garante que não passe de 100%
+                progress = 1;
             }
             
             progressBarEl.style.transform = `scaleX(${progress})`;
@@ -282,11 +310,9 @@
         function updateClockAndDate() {
             const now = new Date();
             
-            // Relógio (HH:MM:SS)
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
             clockEl.textContent = now.toLocaleTimeString('pt-BR', timeOptions);
             
-            // Data
             const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
             let newDateString = now.toLocaleDateString('pt-BR', dateOptions);
             
@@ -420,15 +446,18 @@
                     const title = item.querySelector("title")?.textContent || 'Sem Título';
                     const link = (item.querySelector("link")?.textContent || item.querySelector("link")?.getAttribute('href')) || '#';
                     
+                    const dateString = item.querySelector("pubDate")?.textContent || item.querySelector("published")?.textContent || item.querySelector("updated")?.textContent;
+                    // --- ATUALIZADO: Agora é um objeto { date, time } ---
+                    const dateTime = formatFeedDate(dateString);
+
                     if (link.includes('#comments')) return; 
 
-                    // --- NOVO: Pega o emoji para o título ---
                     const emoji = getEmojiForTitle(title.toLowerCase());
 
                     const li = document.createElement('li');
                     li.className = "border-b border-slate-700/50 pb-3 last:border-b-0";
                     
-                    // --- ATUALIZADO: HTML para incluir o emoji e flex layout ---
+                    // --- ATUALIZADO: HTML para incluir o emoji e o contêiner de data/hora ---
                     li.innerHTML = `
                         <a href="${link}" target="_blank" rel="noopener noreferrer" 
                            class="text-sm text-gray-200 font-medium hover:text-${hoverColor}-400 transition-colors duration-200 flex items-center gap-2.5">
@@ -438,6 +467,14 @@
                             
                             <!-- Span para o título (flex-1 faz ele ocupar o espaço restante) -->
                             <span class="flex-1">${title}</span>
+
+                            <!-- NOVO: Contêiner de Data/Hora (só aparece se a data for válida) -->
+                            ${dateTime.date ? `
+                                <div class="flex flex-col items-end flex-shrink-0 -space-y-0.5">
+                                    <span class="text-xs text-slate-400 font-mono">${dateTime.date}</span>
+                                    <span class="text-[0.7rem] text-slate-500 font-mono">${dateTime.time}</span>
+                                </div>
+                            ` : ''}
                         </a>
                     `;
                     container.appendChild(li);
@@ -487,30 +524,22 @@
                 }
 
                 // 3. VERIFICAÇÃO DE QUALIDADE (NOVO)
-                // Se, após todas as tentativas, a imageUrl ainda for nula,
-                // significa que este Pokémon SÓ tem pixel art (ex: Ditto).
-                // Nesse caso, vamos sortear outro.
                 if (!imageUrl) {
                     console.log(`Pokémon ${data.name} (ID: ${randomId}) não tem imagem de alta resolução. Sorteando outro...`);
-                    // Chama a função novamente com um pequeno atraso
                     setTimeout(fetchRandomPokemon, 100); 
                     return; // Para a execução desta tentativa
                 }
 
                 // 4. Configura os handlers ANTES de definir o .src
-                
-                // Handler de Sucesso (a imagem carregou)
                 pokemonImageEl.onload = () => {
                     pokemonLoaderEl.classList.add('hidden');
                     pokemonImageEl.classList.remove('hidden');
                     pokemonImageEl.classList.add('opacity-100');
                 };
                 
-                // Handler de Erro (a imagem deu 404, etc) (NOVO)
                 pokemonImageEl.onerror = () => {
                     console.warn(`Falha ao carregar a imagem: ${imageUrl}. Sorteando outro Pokémon...`);
                     pokemonImageEl.onerror = null; // Limpa o handler para evitar loops
-                    // Tenta buscar outro Pokémon
                     setTimeout(fetchRandomPokemon, 100); // Adiciona um pequeno atraso
                 };
 
@@ -520,7 +549,6 @@
 
             } catch (error) {
                 console.error("Erro ao buscar Pokémon (catch):", error);
-                // Se o próprio fetch falhar (ex: rede offline), tenta de novo após 1s
                 setTimeout(fetchRandomPokemon, 1000);
             }
         }
@@ -529,17 +557,13 @@
          * Função principal para buscar todos os dados
          */
         function fetchAllData() {
-            // NOVO: Reseta o timer da barra de progresso
+            // Reseta o timer da barra de progresso
             lastRefreshTime = Date.now();
             
             // --- Lógica para resetar a barra visualmente ---
-            // 1. Desliga a transição para o reset ser instantâneo
             progressBarEl.style.transition = 'none';
-            // 2. Reseta o transform
             progressBarEl.style.transform = 'scaleX(0)';
-            // 3. Força o navegador a "ver" a mudança (reflow)
             progressBarEl.offsetHeight; 
-            // 4. Religa a transição para as próximas atualizações
             progressBarEl.style.transition = `transform ${PROGRESS_BAR_UPDATE_INTERVAL}ms linear`;
             // --- Fim da lógica de reset ---
 
@@ -551,27 +575,19 @@
 
         // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Atualiza o relógio imediatamente
             updateClockAndDate();
-            
             updateGreeting();
             setupFocusTask();
             
-            // NOVO: Define o tempo inicial e a transição da barra
             lastRefreshTime = Date.now();
             progressBarEl.style.transition = `transform ${PROGRESS_BAR_UPDATE_INTERVAL}ms linear`;
 
             setTimeout(fetchAllData, 100); 
 
-            // Cria ícones estáticos
             lucide.createIcons();
             
-            // Intervalo do relógio (a cada segundo)
             setInterval(updateClockAndDate, CLOCK_INTERVAL); 
-            // Intervalo de atualização dos feeds/clima (a cada 5 min)
             setInterval(fetchAllData, REFRESH_INTERVAL);
-            
-            // NOVO: Intervalo da barra de progresso (a cada segundo)
             setInterval(updateProgressBar, PROGRESS_BAR_UPDATE_INTERVAL);
         });
 
